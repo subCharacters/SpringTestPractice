@@ -16,7 +16,6 @@ import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.util.List;
 
-import static java.util.List.of;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)

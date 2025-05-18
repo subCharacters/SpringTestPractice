@@ -3,6 +3,9 @@ spring:
     init:
       mode: always
     schema-locations: classpath:/schema.sql
+  batch:
+    job:
+      enabled: false
 job:
   input:
     path: test-input

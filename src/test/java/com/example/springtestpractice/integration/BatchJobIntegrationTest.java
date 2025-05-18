@@ -19,9 +19,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@SpringBootTest(properties = "spring.batch.job.name=dbToCsvJob")
+import static org.assertj.core.api.Assertions.assertThat;
+
+@SpringBootTest(properties = "spring.batch.job.name=none")
 @SpringBatchTest
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
@@ -35,7 +39,15 @@ public class BatchJobIntegrationTest {
     @Qualifier("dbToCsvJob")
     private Job dbToCsvJob;
 
+    @Autowired
+    @Qualifier("csvToDbJob")
+    private Job csvToDbJob;
+
     @Test
+    @SqlGroup({
+            @Sql(scripts = "/sql/insert_posts.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+            @Sql(scripts = "/sql/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    })
     void dbToCsvJob이_정상_완료된다() throws Exception {
         // given
         JobParameters jobParameters = new JobParametersBuilder()
@@ -47,11 +59,21 @@ public class BatchJobIntegrationTest {
         JobExecution jobExecution = jobLauncherTestUtils.launchJob(jobParameters);
 
         // then
-        assert
+        assertThat("COMPLETED").isEqualTo(jobExecution.getStatus().toString());
     }
 
     @Test
     void csvToDbJob이_정상_완료된다() throws Exception {
+        // given
+        JobParameters jobParameters = new JobParametersBuilder()
+                .addLong("time", System.currentTimeMillis())
+                .toJobParameters();
 
+        // when
+        jobLauncherTestUtils.setJob(csvToDbJob);
+        JobExecution jobExecution = jobLauncherTestUtils.launchJob(jobParameters);
+
+        // then
+        assertThat("COMPLETED").isEqualTo(jobExecution.getStatus().toString());
     }
 }

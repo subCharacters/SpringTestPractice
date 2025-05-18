@@ -39,8 +39,10 @@ public class PostRepositoryWithSqlGroupTest {
         // when
         List<Post> posts = postRepository.findAll();
         // then
-        assertThat(posts.size()).isEqualTo(1);
-        assertThat(posts.get(0).getTitle()).isEqualTo("사전 등록 제목");
-        assertThat(posts.get(0).getContent()).isEqualTo("사전 등록 내용");
+        assertThat(posts.size()).isEqualTo(2);
+        assertThat(posts.get(0).getTitle()).isEqualTo("사전 등록 제목2");
+        assertThat(posts.get(1).getTitle()).isEqualTo("사전 등록 제목1");
+        assertThat(posts.get(0).getContent()).isEqualTo("사전 등록 내용2");
+        assertThat(posts.get(1).getContent()).isEqualTo("사전 등록 내용1");
     }
 }

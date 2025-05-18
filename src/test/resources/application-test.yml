@@ -3,3 +3,13 @@ spring:
     init:
       mode: always
     schema-locations: classpath:/schema.sql
+job:
+  input:
+    path: test-input
+  output:
+    path: test-output
+logging:
+  level:
+    sql: debug
+    org:
+      springframework: debug
